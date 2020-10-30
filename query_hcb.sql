@@ -74,7 +74,51 @@ JOIN "transaction" cc ON bb.card=cc.card
 JOIN "merchant" dd ON cc.id_merchant=dd.id_merchant
 WHERE cc.amount<=2
 GROUP BY dd.id_merchant
-ORDER BY COUNT (cc.id_merchant) DESC ;
+ORDER BY COUNT (cc.id_merchant) DESC
+LIMIT 5;
+
+--Isolate transactions from 7:00am to 9:00am
+
+SELECT *
+FROM "transaction" AS aa
+WHERE CAST(date AS time) BETWEEN '7:00:00' AND '9:00:00'
+ORDER BY amount DESC
+LIMIT 100;
+
+-- Isolate transactions for each cardholder
+
+SELECT *
+FROM "card_holder" aa
+LEFT JOIN "credit_card" bb ON aa.id_card_holder=bb.id_card_holder
+JOIN "transaction" cc ON bb.card=cc.card
+JOIN "merchant" dd ON cc.id_merchant=dd.id_merchant
+WHERE aa.id_card_holder=18 OR aa.id_card_holder=2;
+
+-- Isolate transactions for each cardholder and select import columns and sort
+
+SELECT 
+	bb.id_card_holder,
+	bb.card,
+	cc.amount,
+	cc.id_merchant,
+	cc.date
+FROM "card_holder" aa
+LEFT JOIN "credit_card" bb ON aa.id_card_holder=bb.id_card_holder
+JOIN "transaction" cc ON bb.card=cc.card
+JOIN "merchant" dd ON cc.id_merchant=dd.id_merchant
+WHERE aa.id_card_holder=18 OR aa.id_card_holder=2
+ORDER BY cc.date DESC ;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
